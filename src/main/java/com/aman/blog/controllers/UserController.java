@@ -3,6 +3,7 @@ package com.aman.blog.controllers;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserController {
 
 	// POST - Create User
 	@PostMapping("/")
-	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto ) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto ) {
 
 		UserDto createdUserDto = this.userService.createUser(userDto);
 		
