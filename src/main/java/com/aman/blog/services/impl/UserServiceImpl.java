@@ -3,10 +3,12 @@ package com.aman.blog.services.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import com.aman.blog.entities.User;
 import com.aman.blog.exceptions.ResourceNotFoundException;
@@ -19,7 +21,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepo;
-
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@Override
 	public UserDto createUser(UserDto userDto) {
 
@@ -73,28 +78,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private User dtoToUser(UserDto userDto) {
-
-		User user = new User();
-
-		user.setId(userDto.getId());
-		user.setName(userDto.getName());
-		user.setEmail(userDto.getEmail());
-		user.setAbout(userDto.getAbout());
-		user.setPassword(userDto.getPassword());
-
-		return user;
+		return 	this.modelMapper.map(userDto, User.class);
 	}
 
 	public UserDto userToDto(User user) {
-
-		UserDto dto = new UserDto();
-
-		dto.setId(user.getId());
-		dto.setName(user.getName());
-		dto.setEmail(user.getEmail());
-		dto.setPassword(user.getPassword());
-		dto.setAbout(user.getAbout());
-
-		return dto;
+		return this.modelMapper.map(user, UserDto.class);
 	}
 }
