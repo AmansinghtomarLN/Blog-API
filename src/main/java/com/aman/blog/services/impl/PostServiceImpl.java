@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,7 @@ import com.aman.blog.entities.User;
 import com.aman.blog.exceptions.ResourceNotFoundException;
 import com.aman.blog.payloads.CategoryDto;
 import com.aman.blog.payloads.PostDto;
+import com.aman.blog.payloads.PostResponse;
 import com.aman.blog.repositories.CategoryRepo;
 import com.aman.blog.repositories.PostRepo;
 import com.aman.blog.repositories.UserRepository;
@@ -117,13 +119,22 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPostByPage(Integer pageNumber, Integer pageSize) {
+	public PostResponse getAllPostByPage(Integer pageNumber, Integer pageSize) {
 
 		Pageable p = PageRequest.of(pageNumber,pageSize);
 		Page<Post> pagePost = this.postRepo.findAll(p);
 		List<Post> allPosts = pagePost.getContent();
+		List<PostDto>  posts = allPosts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 		
-		return allPosts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(posts);
+		postResponse.setPageNumber(pagePost.getNumber());
+		postResponse.setPageSize(pagePost.getSize());
+		postResponse.setTotalElement(pagePost.getTotalElements());
+		postResponse.setTotalPages(pagePost.getTotalPages());
+		postResponse.setLastPage(pagePost.isLast());
+		
+		return  postResponse;
 	}
 
 }
