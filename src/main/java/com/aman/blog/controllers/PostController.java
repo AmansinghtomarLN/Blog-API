@@ -1,10 +1,12 @@
 package com.aman.blog.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +63,14 @@ public class PostController {
 		PostDto post = this.postService.getPostById(postId);
 	
 		return new ResponseEntity<PostDto>(post, HttpStatus.OK);
+	}
+	
+	
+	@DeleteMapping("/posts/{postId}")
+	public ResponseEntity<PostDto> deletePostById(@PathVariable Integer postId){
+		this.postService.deletePost(postId);
+	
+		return new ResponseEntity(Map.of("message", "Deleted successfully"), HttpStatus.OK);
 	}
 	
 }
