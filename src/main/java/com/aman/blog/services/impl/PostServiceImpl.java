@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.aman.blog.entities.Category;
@@ -27,6 +28,8 @@ import com.aman.blog.repositories.CategoryRepo;
 import com.aman.blog.repositories.PostRepo;
 import com.aman.blog.repositories.UserRepository;
 import com.aman.blog.services.PostService;
+
+
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -119,9 +122,11 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostResponse getAllPostByPage(Integer pageNumber, Integer pageSize) {
+	public PostResponse getAllPostByPage(Integer pageNumber, Integer pageSize, String sortBy) {
 
-		Pageable p = PageRequest.of(pageNumber,pageSize);
+		Pageable p = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
+	//	Pageable p = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy).descending());
+		
 		Page<Post> pagePost = this.postRepo.findAll(p);
 		List<Post> allPosts = pagePost.getContent();
 		List<PostDto>  posts = allPosts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
