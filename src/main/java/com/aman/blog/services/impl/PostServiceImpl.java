@@ -102,4 +102,26 @@ public class PostServiceImpl implements PostService {
 		return null;
 	}
 
+	@Override
+	public PostDto getPostById(Integer postId) {
+		Post post = this.postRepo.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+		
+		return this.modelMapper.map(post,PostDto.class);
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
