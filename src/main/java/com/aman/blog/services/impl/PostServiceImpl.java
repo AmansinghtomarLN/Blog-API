@@ -1,5 +1,6 @@
 package com.aman.blog.services.impl;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,9 @@ import javax.persistence.PostRemove;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.aman.blog.entities.Category;
@@ -110,6 +114,16 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
 		
 		return this.modelMapper.map(post,PostDto.class);
+	}
+
+	@Override
+	public List<PostDto> getAllPostByPage(Integer pageNumber, Integer pageSize) {
+
+		Pageable p = PageRequest.of(pageNumber,pageSize);
+		Page<Post> pagePost = this.postRepo.findAll(p);
+		List<Post> allPosts = pagePost.getContent();
+		
+		return allPosts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 	}
 
 }
